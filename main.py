@@ -28,14 +28,17 @@ from kivy.graphics import (Color, Ellipse, Rectangle, Line)
 
 class PainterWidget(Widget):
 	def on_touch_down(self, touch):
+		# Get value of sliders and set color
 		slider_r_control = BanderasPaintApp.slider_color_r.value
 		slider_g_control = BanderasPaintApp.slider_color_g.value
 		slider_b_control = BanderasPaintApp.slider_color_b.value
 		slider_a_control = BanderasPaintApp.slider_color_a.value
 		color = (slider_r_control, slider_g_control, slider_b_control, slider_a_control)
 
+		# Size of brush
 		slider_control = BanderasPaintApp.slider.value
 
+		# Also drawing
 		with self.canvas:
 			Color(*color)
 			rad = slider_control
@@ -44,16 +47,20 @@ class PainterWidget(Widget):
 				Ellipse(pos = (touch.x - rad/2, touch.y - rad/2), size = (rad, rad))
 				touch.ud["line"] = Line(points = (touch.x, touch.y), width = rad / 2)
 
+	# Drawing with moving mouse
 	def on_touch_move(self, touch):
 		window_width, window_height = Window.size
 		if touch.y < window_height * 8.5 / 10:
 			touch.ud["line"].points += (touch.x, touch.y)
 
 class BanderasPaintApp(App):
+	# Our sliders for setting up R G B and A channels
 	slider_color_r = Slider(value = 0, min = 0, max = 1)
 	slider_color_g = Slider(value = 0, min = 0, max = 1)
 	slider_color_b = Slider(value = 0, min = 0, max = 1)
 	slider_color_a = Slider(value = 0, min = 0, max = 1)
+
+	# Slider for stting size of brush
 	slider = Slider(value = 8, min = 0, max = 36)
 	def build(self):
 		# Window layout
@@ -91,9 +98,11 @@ class BanderasPaintApp(App):
 
 		return parent
 
+	# Clear Our Painter Widget :)
 	def clear_canvas(self, instance):
 		self.painter.canvas.clear()
 
+	# Save our art :)
 	def save(self, instance):
 		self.painter.size = (Window.size[0], Window.size[1])
 		self.painter.export_to_png("image.png")
